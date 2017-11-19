@@ -1,0 +1,92 @@
+// This will appear
+  in .html
+//- This will only appear
+  in .pug
+  
+// script.
+// alert('hello')
+- var authenticated = true
+- var users = ['John', 'Sarah', 'Julius Caesar']
+- var url = "google.com"
+ mixin link(href, name)
+  //- attributes == {class: "btn"}
+  a(class!=attributes.class href=href)= name
+doctype html
+html(lang='en')
+  body(class=authenticated ? 'authed' : 'anon')
+    div(class='div-class')
+    h1.class#id(name='hi')
+      | Heading 1 cooly
+    input(type='text' name='q' autofocus)
+    br
+    
+    //-multi-line attribs
+    input(
+      type="checkbox"
+      name="agreement"
+      checked
+    )
+    br
+    br
+    a(href='https://' + url) Google
+    br
+    - url = "wired.com"
+    a(href='https://' + url) Second Url
+    br
+    
+    //- Conditional
+    - var currentUrl = '/about'
+    a(
+      class={active: currentUrl === '/about'} href='/about'
+      ) About
+    ul
+      each user in users
+        li= user
+        
+    - var attributes = {'data-foo': 'bar'};
+    - attributes.class = 'baz';
+    - attributes.name = 'cool'
+    //- Bad way: &attributes doesn't sanitize user input for XSS
+    div#foo(data-bar="foo")&attributes(attributes)
+      //- Better: sanitizes attrib(class="btn")
+      +link('/foo', 'foo')(class="btn")
+      
+    //- Cases
+    - var friends = 1
+    case friends
+      when 0
+        p you have no friends
+      when 1: p you have a friend
+      default
+        p you have #{friends} friends
+    //- iterration
+    - var list = ["Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis"]
+    each item in list
+      li= item
+    
+    ul
+    //-keep index
+    each val, index in ['zero', 'one', 'two']
+      li= index + ': ' + val
+      
+    //-Key-value
+    ul
+    each val, index in {1:'one',2:'two',3:'three'}
+      li= index + ': ' + val
+    //-Conditional loop
+    - var values = [];
+    ul
+    each val in values.length ? values : ['There are no values']
+      li= val
+      
+    //-While loop
+    - var n = 0;
+    ul
+    while n < 4
+      li= n++
+    //- Escaped/UnEscaped buffered code
+    p= "This is escaped <!>"
+    p!= "This is <strong> not </strong> escaped!"
+    //-inline tags (preserve whitespace)
+    p.
+     If I do, whitespace is #[strong respected] and #[em everybody] is happy.
